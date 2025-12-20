@@ -50,17 +50,13 @@ namespace Preassignment.LaserSystem
                     currentDirection = mirror.Reflect(currentDirection, hit.normal);
 
                     currentOrigin = hit.point + currentDirection * _config.SurfaceOffset;
-                    Debug.Log("mirror has been hit");
                     continue;
                 }
 
-                if (hit.collider.TryGetComponent<Receiver>(out var receiver))
+                if (i == _config.MaxReflections - 1)
                 {
-                    receiver.OnInteractStart();
-                    Debug.Log("hit the receiver");
-                    break;
+                    Debug.Log("Maximum allowed reflections hit- no more will be traced.");
                 }
-
                 break;
             }
 

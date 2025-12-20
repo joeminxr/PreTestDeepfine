@@ -3,19 +3,37 @@ namespace Preassignment.Interactables
     using UnityEngine;
 
     [RequireComponent(typeof(Collider))]
-    public sealed class Mirror : MonoBehaviour, IInteractable
+    public sealed class Mirror : MonoBehaviour, ILaserInteractable, ITransformInteractable
     {
         public Vector3 Reflect(Vector3 incomingDirection, Vector3 surfaceNormal)
         {
             return Vector3.Reflect(incomingDirection, surfaceNormal);
         }
 
-        public void OnInteractStart()
+        public void OnLaserEnter()
         {
+            Debug.Log("This mirror has been hit with a laser");
         }
 
-        public void OnInteractEnd()
+        public void OnLaserExit() { }
+
+        public bool IsBeingTransformed { get; private set; }
+
+        public Transform Transform => transform;
+
+        public void BeginTransform()
         {
+            IsBeingTransformed = true;
+        }
+
+        public void UpdateTransform(Vector3 position, Quaternion rotation)
+        {
+            transform.SetPositionAndRotation(position, rotation);
+        }
+
+        public void EndTransform()
+        {
+            IsBeingTransformed = false;
         }
     }
 }
