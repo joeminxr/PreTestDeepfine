@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Preassignment.Interactables;
 
-namespace LaserSystem
+namespace Preassignment.LaserSystem
 {
+    /// <summary>
+    /// Raycast logic and checks to trace the path of the laser visual prior to updating the renderer
+    /// </summary>
     public sealed class LaserTracer
     {
         private readonly LaserConfig _config;
@@ -16,7 +20,38 @@ namespace LaserSystem
 
         public TraceResult Trace(Vector3 origin, Vector3 direction)
         {
-            return null; //tbd
+            var points = new List<Vector3> { origin };
+            var hits = new List<RaycastHit>();
+
+            Vector3 currentOrigin = origin;
+            Vector3 currentDirection = direction.normalized;
+
+            for (int i = 0; i < _config.MaxReflections; i++)
+            {
+                if (!Physics.Raycast(
+                        currentOrigin,
+                        currentDirection,
+                        out RaycastHit hit,
+                        _config.MaxLaserDistance,
+                        _collisionMask))
+                {
+                    points.Add(
+                        currentOrigin +
+                        currentDirection * _config.MaxLaserDistance);
+                    Debug.LogWarning("Didn't hit anything on config layers- are obstacles set to the correct layer?");
+                    break;
+                }
+
+                hits.Add(hit);
+                points.Add(hit.point);
+
+                // for now- let's stop the loop when laser it hits the first obstacle
+                // tbd: continue loop when hitting a mirror surface
+
+                break;
+            }
+
+            return new TraceResult(points, hits);
         }
     }
 

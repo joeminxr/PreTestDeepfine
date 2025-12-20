@@ -1,5 +1,8 @@
-public interface IInteractable
+namespace Preassignment.Interactables
 {
-    void OnInteractStart();
-    void OnInteractEnd();
+    public interface IInteractable
+    {
+        void OnInteractStart();
+        void OnInteractEnd();
+    }
 }

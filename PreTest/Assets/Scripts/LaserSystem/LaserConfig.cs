@@ -1,4 +1,4 @@
-namespace LaserSystem
+namespace Preassignment.LaserSystem
 {
     /// <summary>
     /// Immutable configuration data for the Laser system.

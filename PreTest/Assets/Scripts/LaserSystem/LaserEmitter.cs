@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Preassignment.Interactables;
 
-namespace LaserSystem
+namespace Preassignment.LaserSystem
 {
     /// <summary>
     /// Coordinates laser subsystems during runtime.
@@ -9,6 +10,8 @@ namespace LaserSystem
     /// </summary>
     public class LaserEmitter : MonoBehaviour
     {
+        [SerializeField] private LineRenderer m_lineRenderer;
+
         // Dependencies
         private LaserConfig _config;
         private LaserTracer _tracer;
@@ -19,7 +22,7 @@ namespace LaserSystem
         private TraceResult _currentTrace;
 
         // Interaction tracking
-        private HashSet<IInteractable> _currentLaserInteractables;
+        private readonly HashSet<IInteractable> _activeInteractables = new HashSet<IInteractable>();
 
         private void Awake()
         {
@@ -43,7 +46,7 @@ namespace LaserSystem
 
             _tracer = new LaserTracer(_config, collisionMask);
 
-            _renderer = GetComponent<LaserRenderer>();
+            _renderer = new LaserRenderer(m_lineRenderer);
         }
 
         public void MarkDirty()
@@ -53,9 +56,46 @@ namespace LaserSystem
 
         private void UpdateLaser()
         {
-            // 1. Trace laser path
-            // 2. Render laser
-            // 3. Process interactions (enter / exit)
+            _currentTrace = _tracer.Trace(transform.position, transform.forward);
+
+            _renderer.Render(_currentTrace);
+
+            ProcessInteractions(_currentTrace);
+        }
+
+        private void ProcessInteractions(TraceResult traceResult)
+        {
+            // Collect interactables hit this frame
+            var currentInteractables = new HashSet<IInteractable>();
+
+            foreach (var hit in traceResult.Hits)
+            {
+                if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
+                {
+                    currentInteractables.Add(interactable);
+                }
+            }
+
+            // If laser stops hitting mirror (previous to current)
+            foreach (var interactable in _activeInteractables)
+            {
+                if (!currentInteractables.Contains(interactable))
+                {
+                    interactable.OnInteractEnd();
+                }
+            }
+
+            // If laser starts/still hits mirror (current to previous)
+            foreach (var interactable in currentInteractables)
+            {
+                if (!_activeInteractables.Contains(interactable))
+                {
+                    interactable.OnInteractStart();
+                }
+            }
+
+            _activeInteractables.Clear();
+            _activeInteractables.UnionWith(currentInteractables);
         }
 
         #region Config Helpers
@@ -70,7 +110,7 @@ namespace LaserSystem
                 maxReflections: 10,
                 maxLaserDistance: 100f,
                 surfaceOffset: 0.001f,
-                collisionLayerNames: new[] { "Mirror", "Receiver" }
+                collisionLayerNames: new[] { "Mirror", "Receiver", "Obstacle" }
             );
         }
 
