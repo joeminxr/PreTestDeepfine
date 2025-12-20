@@ -8,10 +8,13 @@ Edit. 2025-12-20
 - LaserTracer => TraceResult
 - LaserRenderer
 - LaserConfig
+### Interfaces
+- ILaserInteractable
+- ITransformInteractable
 ### Interactables
-- IInteractable
 - Mirror
 - Receiver
 ### Helpers
 - ObjectSpawner
+- TransformManipulator
 ### Debugging
