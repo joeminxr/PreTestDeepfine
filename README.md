@@ -5,14 +5,11 @@ Edit. 2025-12-20
 ## 1. 프로젝트 구조(상위)
 ### LaserSystem
 - LaserEmitter
-- LaserTracer
+- LaserTracer => TraceResult
 - LaserRenderer
 - LaserConfig
-### Interactables (Interfaces)
+### Interactables
 - IInteractable
-- IMirrorSurface
-- ILaserReceiver
-### Interactables (Class)
 - Mirror
 - Receiver
 ### Helpers
