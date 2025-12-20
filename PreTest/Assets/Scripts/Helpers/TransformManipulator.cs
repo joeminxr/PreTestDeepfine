@@ -6,13 +6,17 @@ namespace Preassignment.Helpers
 
     public sealed class TransformManipulator : MonoBehaviour
     {
+        [Header("Setup")]
         [SerializeField] private LayerMask mirrorMask;
         [SerializeField] private LayerMask boardMask;
         [SerializeField] private LaserEmitter laserEmitter;
 
+        [Header("Rotation")]
+        [SerializeField] private float rotationSpeed = 90f; // degrees per second
+
         private Camera mainCamera;
         private ITransformInteractable _active;
-        private Transform _activeTransform;
+        private Quaternion _currentRotation;
 
         void Start()
         {
@@ -45,7 +49,15 @@ namespace Preassignment.Helpers
             if (!hit.collider.TryGetComponent<ITransformInteractable>(out _active))
                 return;
 
-            _activeTransform = hit.collider.transform;
+            if (!Physics.Raycast(ray, out RaycastHit boardHit, Mathf.Infinity, boardMask))
+                return;
+
+            Quaternion alignToSurface =
+                Quaternion.FromToRotation(Vector3.up, boardHit.normal);
+
+            _currentRotation =
+                _active.Transform.rotation * Quaternion.Inverse(alignToSurface);
+
             _active.BeginTransform();
         }
 
@@ -58,12 +70,39 @@ namespace Preassignment.Helpers
 
             Vector3 position = hit.point;
 
-            // keep mirror perpendicular to the board
-            Quaternion rotation =
+            // Align mirror perpendicular to surface
+            Quaternion alignToSurface =
                 Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-            _active.UpdateTransform(position, rotation);
+            // Build surface axes
+            Vector3 surfaceNormal = hit.normal;
+            Vector3 surfaceRight = Vector3.Cross(surfaceNormal, Vector3.up).normalized;
 
+            if (surfaceRight.sqrMagnitude < 0.001f)
+                surfaceRight = Vector3.right; // fallback for near-vertical normals
+
+            // Handle rotation input
+            float delta = rotationSpeed * Time.deltaTime;
+
+            Quaternion rotationDelta = Quaternion.identity;
+
+            if (Input.GetKey(KeyCode.A))
+                rotationDelta *= Quaternion.AngleAxis(-delta, surfaceNormal);
+
+            if (Input.GetKey(KeyCode.D))
+                rotationDelta *= Quaternion.AngleAxis(delta, surfaceNormal);
+
+            if (Input.GetKey(KeyCode.W))
+                rotationDelta *= Quaternion.AngleAxis(-delta, surfaceRight);
+
+            if (Input.GetKey(KeyCode.S))
+                rotationDelta *= Quaternion.AngleAxis(delta, surfaceRight);
+
+            _currentRotation = rotationDelta * _currentRotation;
+
+            Quaternion finalRotation = _currentRotation * alignToSurface;
+
+            _active.UpdateTransform(position, finalRotation);
             laserEmitter.MarkDirty();
         }
 
@@ -74,7 +113,7 @@ namespace Preassignment.Helpers
 
             _active.EndTransform();
             _active = null;
-            _activeTransform = null;
+            _currentRotation = Quaternion.identity;
 
             laserEmitter.MarkDirty();
         }

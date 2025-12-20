@@ -17,6 +17,8 @@ namespace Preassignment.Interactables
 
         public void OnLaserExit() { }
 
+        public Transform Transform => transform;
+
         public void BeginTransform()
         {
         }
