@@ -1,5 +1,6 @@
 namespace Preassignment.Helpers
 {
+    using Preassignment.Interactables;
     using Preassignment.LaserSystem;
     using System.Collections.Generic;
     using UnityEngine;
@@ -81,6 +82,15 @@ namespace Preassignment.Helpers
 
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, spawnPrefabLayerMask))
             {
+                if (hit.collider.TryGetComponent<ITransformInteractable>(out var transformInteractable))
+                {
+                    if (transformInteractable.IsBeingTransformed)
+                    {
+                        Debug.LogWarning("You are attempting to despawn an object you are interacting with. Unable to despawn object while it is being manipulated");
+                        return;
+                    }
+                }
+
                 GameObject mirror = hit.collider.gameObject;
 
                 if (!mirror.activeSelf) return;

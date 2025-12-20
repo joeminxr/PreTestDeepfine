@@ -53,6 +53,10 @@ namespace Preassignment.LaserSystem
                     continue;
                 }
 
+                if (i == _config.MaxReflections - 1)
+                {
+                    Debug.Log("Maximum allowed reflections hit- no more will be traced.");
+                }
                 break;
             }
 

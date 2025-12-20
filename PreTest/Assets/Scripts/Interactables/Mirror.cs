@@ -17,10 +17,13 @@ namespace Preassignment.Interactables
 
         public void OnLaserExit() { }
 
+        public bool IsBeingTransformed { get; private set; }
+
         public Transform Transform => transform;
 
         public void BeginTransform()
         {
+            IsBeingTransformed = true;
         }
 
         public void UpdateTransform(Vector3 position, Quaternion rotation)
@@ -30,6 +33,7 @@ namespace Preassignment.Interactables
 
         public void EndTransform()
         {
+            IsBeingTransformed = false;
         }
     }
 }

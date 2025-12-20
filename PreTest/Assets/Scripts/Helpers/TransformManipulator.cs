@@ -70,11 +70,11 @@ namespace Preassignment.Helpers
 
             Vector3 position = hit.point;
 
-            // Align mirror perpendicular to surface
+            // align mirror perpendicular to surface
             Quaternion alignToSurface =
                 Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-            // Build surface axes
+            // build surface axes
             Vector3 surfaceNormal = hit.normal;
             Vector3 surfaceRight = Vector3.Cross(surfaceNormal, Vector3.up).normalized;
 

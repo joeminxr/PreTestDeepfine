@@ -111,7 +111,7 @@ namespace Preassignment.LaserSystem
                 maxReflections: 10,
                 maxLaserDistance: 100f,
                 surfaceOffset: 0.001f,
-                collisionLayerNames: new[] { "Mirror", "Receiver", "Obstacle" }
+                collisionLayerNames: new[] { "Ground", "Mirror", "Receiver", "Obstacle" }
             );
         }
 
