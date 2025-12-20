@@ -2,6 +2,9 @@ namespace Preassignment.Interactables
 {
     using UnityEngine;
 
+    /// <summary>
+    /// Interactable laser target that changes state when hit
+    /// </summary>
     public sealed class Receiver : MonoBehaviour, ILaserInteractable
     {
         private Renderer _renderer;
@@ -21,6 +24,8 @@ namespace Preassignment.Interactables
             _material.color = InactiveColor;
         }
 
+        #region ILaserInteractable Properties
+
         public void OnLaserEnter()
         {
             _material.color = ActiveColor;
@@ -32,5 +37,7 @@ namespace Preassignment.Interactables
             _material.color = InactiveColor;
             Debug.Log("laser has left this receiver");
         }
+
+        #endregion
     }
 }

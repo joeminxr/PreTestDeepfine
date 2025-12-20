@@ -74,9 +74,6 @@ namespace Preassignment.LaserSystem
         public IReadOnlyList<Vector3> Points { get; }
         public IReadOnlyList<RaycastHit> Hits { get; }
 
-        public bool HasHit => Hits.Count > 0;
-        public RaycastHit? FinalHit => Hits.Count > 0 ? Hits[^1] : null;
-
         public TraceResult(List<Vector3> points, List<RaycastHit> hits)
         {
             Points = points;

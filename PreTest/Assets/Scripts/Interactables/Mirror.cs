@@ -2,20 +2,37 @@ namespace Preassignment.Interactables
 {
     using UnityEngine;
 
+    /// <summary>
+    /// Reflective surface implementation and orchestrates interactive events
+    /// </summary>
     [RequireComponent(typeof(Collider))]
     public sealed class Mirror : MonoBehaviour, ILaserInteractable, ITransformInteractable
     {
+        /// <summary>
+        /// </summary>
+        /// <param name="incomingDirection"></param>
+        /// <param name="surfaceNormal"></param>
+        /// <returns></returns>
         public Vector3 Reflect(Vector3 incomingDirection, Vector3 surfaceNormal)
         {
             return Vector3.Reflect(incomingDirection, surfaceNormal);
         }
 
+        #region ILaserInteractable Properties
+
         public void OnLaserEnter()
         {
-            Debug.Log("This mirror has been hit with a laser");
+            Debug.Log("This mirror is reflecting a laser");
         }
 
-        public void OnLaserExit() { }
+        public void OnLaserExit()
+        {
+            Debug.Log("This mirror stopped reflecting a laser");
+        }
+
+        #endregion
+
+        #region ITransformInteractable Properties
 
         public bool IsBeingTransformed { get; private set; }
 
@@ -35,5 +52,7 @@ namespace Preassignment.Interactables
         {
             IsBeingTransformed = false;
         }
+
+        #endregion
     }
 }

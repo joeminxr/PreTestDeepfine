@@ -4,6 +4,9 @@ namespace Preassignment.Helpers
     using Preassignment.LaserSystem;
     using UnityEngine;
 
+    /// <summary>
+    /// Handles runtime mirror position and rotation manipulation logic
+    /// </summary>
     public sealed class TransformManipulator : MonoBehaviour
     {
         [Header("Setup")]

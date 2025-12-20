@@ -63,7 +63,6 @@ namespace Preassignment.LaserSystem
             ProcessInteractions(_currentTrace);
         }
 
-        // logic setup for now- need to revisit after mirror transform manipulation logic
         private void ProcessInteractions(TraceResult traceResult)
         {
             // Collect interactables hit this frame

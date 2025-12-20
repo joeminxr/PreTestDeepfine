@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace Preassignment.Interactables
 {
+    /// <summary>
+    /// Interface for runtime manipulation of object transforms (e.g., position and rotation) independent of specific input methods
+    /// </summary>
     public interface ITransformInteractable
     {
         bool IsBeingTransformed { get; }
