@@ -50,15 +50,7 @@ namespace Preassignment.LaserSystem
                     currentDirection = mirror.Reflect(currentDirection, hit.normal);
 
                     currentOrigin = hit.point + currentDirection * _config.SurfaceOffset;
-                    Debug.Log("mirror has been hit");
                     continue;
-                }
-
-                if (hit.collider.TryGetComponent<Receiver>(out var receiver))
-                {
-                    receiver.OnInteractStart();
-                    Debug.Log("hit the receiver");
-                    break;
                 }
 
                 break;

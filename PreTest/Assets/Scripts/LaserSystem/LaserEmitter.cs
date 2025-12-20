@@ -22,7 +22,7 @@ namespace Preassignment.LaserSystem
         private TraceResult _currentTrace;
 
         // Interaction tracking
-        private readonly HashSet<IInteractable> _activeInteractables = new HashSet<IInteractable>();
+        private readonly HashSet<ILaserInteractable> _activeLaserInteractables = new HashSet<ILaserInteractable>();
 
         private void Awake()
         {
@@ -67,36 +67,36 @@ namespace Preassignment.LaserSystem
         private void ProcessInteractions(TraceResult traceResult)
         {
             // Collect interactables hit this frame
-            var currentInteractables = new HashSet<IInteractable>();
+            var currentLaserInteractables = new HashSet<ILaserInteractable>();
 
             foreach (var hit in traceResult.Hits)
             {
-                if (hit.collider.TryGetComponent<IInteractable>(out var interactable))
+                if (hit.collider.TryGetComponent<ILaserInteractable>(out var interactable))
                 {
-                    currentInteractables.Add(interactable);
+                    currentLaserInteractables.Add(interactable);
                 }
             }
 
             // If laser stops hitting mirror (previous to current)
-            foreach (var interactable in _activeInteractables)
+            foreach (var interactable in _activeLaserInteractables)
             {
-                if (!currentInteractables.Contains(interactable))
+                if (!currentLaserInteractables.Contains(interactable))
                 {
-                    interactable.OnInteractEnd();
+                    interactable.OnLaserExit();
                 }
             }
 
             // If laser starts/still hits mirror (current to previous)
-            foreach (var interactable in currentInteractables)
+            foreach (var interactable in currentLaserInteractables)
             {
-                if (!_activeInteractables.Contains(interactable))
+                if (!_activeLaserInteractables.Contains(interactable))
                 {
-                    interactable.OnInteractStart();
+                    interactable.OnLaserEnter();
                 }
             }
 
-            _activeInteractables.Clear();
-            _activeInteractables.UnionWith(currentInteractables);
+            _activeLaserInteractables.Clear();
+            _activeLaserInteractables.UnionWith(currentLaserInteractables);
         }
 
         #region Config Helpers
