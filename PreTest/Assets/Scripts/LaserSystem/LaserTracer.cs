@@ -45,8 +45,21 @@ namespace Preassignment.LaserSystem
                 hits.Add(hit);
                 points.Add(hit.point);
 
-                // for now- let's stop the loop when laser it hits the first obstacle
-                // tbd: continue loop when hitting a mirror surface
+                if (hit.collider.TryGetComponent<Mirror>(out var mirror))
+                {
+                    currentDirection = mirror.Reflect(currentDirection, hit.normal);
+
+                    currentOrigin = hit.point + currentDirection * _config.SurfaceOffset;
+                    Debug.Log("mirror has been hit");
+                    continue;
+                }
+
+                if (hit.collider.TryGetComponent<Receiver>(out var receiver))
+                {
+                    receiver.OnInteractStart();
+                    Debug.Log("hit the receiver");
+                    break;
+                }
 
                 break;
             }
@@ -64,6 +77,9 @@ namespace Preassignment.LaserSystem
     {
         public IReadOnlyList<Vector3> Points { get; }
         public IReadOnlyList<RaycastHit> Hits { get; }
+
+        public bool HasHit => Hits.Count > 0;
+        public RaycastHit? FinalHit => Hits.Count > 0 ? Hits[^1] : null;
 
         public TraceResult(List<Vector3> points, List<RaycastHit> hits)
         {

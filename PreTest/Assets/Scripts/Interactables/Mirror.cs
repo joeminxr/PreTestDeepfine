@@ -1,18 +1,21 @@
-using UnityEngine;
-using Preassignment.Interactables;
-
-public sealed class Mirror : MonoBehaviour, IMirrorSurface
+namespace Preassignment.Interactables
 {
-    public Vector3 Reflect(Vector3 incomingDirection, Vector3 surfaceNormal)
-    {
-        return Vector3.zero; //tbd
-    }
+    using UnityEngine;
 
-    public void OnInteractStart()
+    [RequireComponent(typeof(Collider))]
+    public sealed class Mirror : MonoBehaviour, IInteractable
     {
-    }
+        public Vector3 Reflect(Vector3 incomingDirection, Vector3 surfaceNormal)
+        {
+            return Vector3.Reflect(incomingDirection, surfaceNormal);
+        }
 
-    public void OnInteractEnd()
-    {
+        public void OnInteractStart()
+        {
+        }
+
+        public void OnInteractEnd()
+        {
+        }
     }
 }

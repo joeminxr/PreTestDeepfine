@@ -56,13 +56,14 @@ namespace Preassignment.LaserSystem
 
         private void UpdateLaser()
         {
-            _currentTrace = _tracer.Trace(transform.position, transform.forward);
+            _currentTrace = _tracer.Trace(m_lineRenderer.transform.position, m_lineRenderer.transform.forward);
 
             _renderer.Render(_currentTrace);
 
             ProcessInteractions(_currentTrace);
         }
 
+        // logic setup for now- need to revisit after mirror transform manipulation logic
         private void ProcessInteractions(TraceResult traceResult)
         {
             // Collect interactables hit this frame
