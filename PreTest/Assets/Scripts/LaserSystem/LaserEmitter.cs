@@ -42,7 +42,7 @@ namespace Preassignment.LaserSystem
         {
             _config = CreateDefaultConfig();
 
-            LayerMask collisionMask = ResolveCollisionMask(_config.CollisionLayerNames);
+            var collisionMask = ResolveCollisionMask(_config.CollisionLayerNames);
 
             _tracer = new LaserTracer(_config, collisionMask);
 
